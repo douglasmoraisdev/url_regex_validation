@@ -1,0 +1,7 @@
+pika
+python-dotenv
+mysql-connector
+sqlalchemy
+pymysql
+alembic
+rabbitmq-admin

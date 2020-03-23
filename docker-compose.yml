@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  # Application
+  whitelist_service:
+    build: .
+    volumes:
+      - ./src/.docker.env:/src/.env
+      - ./src/tests/.env:/src/tests/.env
+    container_name: python_whitelist_service
+    depends_on: 
+      - rabbitmq
+
+  # RabbitMQ
+  rabbitmq:
+    hostname: rabbitmq
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # Mysql
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    hostname: mysql
+    ports:
+      - "3306:3306"     
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'abacate00'
+      MYSQL_DATABASE: 'axur'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'abacate00'
+
+    volumes:
+      - my-datavolume:/var/lib/mysql
+
+  # Mysql Admin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    hostname: phpmyadmin
+    ports:
+      - "8080:80"     
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: abacate00
+      MYSQL_ROOT_PASSWORD: abacate00
+
+volumes:
+  my-datavolume:
